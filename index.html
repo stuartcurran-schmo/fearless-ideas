@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patterns for Introducing Ideas</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Reenie+Beanie&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --card-bg: #fdfcfa;
+    --card-shadow: #d0c8bc;
+    --ink: #2e2e2e;
+    --ink-light: #5a5a5a;
+    --tape: rgba(255, 230, 150, 0.6);
+    --early: #e8f0d8;
+    --early-ink: #3a5220;
+    --later: #d8e8f0;
+    --later-ink: #1e3d58;
+    --resistance: #f0d8d8;
+    --resistance-ink: #5a2020;
+    --throughout: #ede8f5;
+    --throughout-ink: #3d2060;
+    --bg: #f5f3ef;
+    --line: #d4c5a9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    font-family: 'Patrick Hand', cursive;
+    color: var(--ink);
+    padding: 0 0 60px;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  /* Header */
+  .header {
+    padding: 40px 30px 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .header h1 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+    position: relative;
+    display: inline-block;
+  }
+
+  .header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--ink);
+    border-radius: 2px;
+    transform: rotate(-0.5deg);
+  }
+
+  .header .subtitle {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--ink-light);
+    margin-top: 10px;
+    transform: rotate(-0.3deg);
+    display: inline-block;
+  }
+
+
+
+  .header .attribution {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    margin-top: 14px;
+    display: block;
+  }
+
+  .header .attribution a {
+    color: var(--ink-light);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(90,90,90,0.4);
+    transition: color 0.15s, text-decoration-color 0.15s;
+  }
+
+  .header .attribution a:hover {
+    color: var(--ink);
+    text-decoration-color: var(--ink);
+  }
+
+  /* Controls */
+  .controls {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-wrapper {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+
+  .search-wrapper::before {
+    content: '🔍';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 16px 10px 38px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1rem;
+    background: var(--card-bg);
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    color: var(--ink);
+    outline: none;
+    box-shadow: 3px 3px 0 var(--card-shadow);
+    transition: box-shadow 0.15s;
+    transform: rotate(-0.2deg);
+  }
+
+  input[type="text"]:focus {
+    box-shadow: 5px 5px 0 var(--card-shadow);
+  }
+
+  input[type="text"]::placeholder {
+    color: var(--ink-light);
+    opacity: 0.7;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    padding: 8px 16px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    cursor: pointer;
+    background: var(--card-bg);
+    color: var(--ink);
+    box-shadow: 3px 3px 0 var(--card-shadow);
+    transition: all 0.1s;
+    transform: rotate(0.3deg);
+    user-select: none;
+  }
+
+  .tab:nth-child(2) { transform: rotate(-0.4deg); }
+  .tab:nth-child(3) { transform: rotate(0.5deg); }
+  .tab:nth-child(4) { transform: rotate(-0.2deg); }
+  .tab:nth-child(5) { transform: rotate(0.3deg); }
+
+  .tab:hover {
+    box-shadow: 5px 5px 0 var(--card-shadow);
+    transform: translateY(-1px) rotate(0.3deg);
+  }
+
+  .tab.active[data-when="All"] { background: var(--ink); color: #faf6ee; }
+  .tab.active[data-when="Early"] { background: var(--early); color: var(--early-ink); border-color: var(--early-ink); }
+  .tab.active[data-when="Later"] { background: var(--later); color: var(--later-ink); border-color: var(--later-ink); }
+  .tab.active[data-when="Resistance"] { background: var(--resistance); color: var(--resistance-ink); border-color: var(--resistance-ink); }
+  .tab.active[data-when="Throughout"] { background: var(--throughout); color: var(--throughout-ink); border-color: var(--throughout-ink); }
+
+  .tab:active {
+    box-shadow: 1px 1px 0 var(--card-shadow);
+    transform: translateY(1px);
+  }
+
+  /* Count */
+  .count {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+    padding: 0 20px;
+    max-width: 1000px;
+    margin: 0 auto 10px;
+    transform: rotate(-0.2deg);
+    display: block;
+  }
+
+  /* Card grid */
+  .cards-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    columns: 3;
+    column-gap: 20px;
+  }
+
+  @media (max-width: 800px) { .cards-grid { columns: 2; } }
+  @media (max-width: 500px) { .cards-grid { columns: 1; } }
+
+  /* Card */
+  .card {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    background: var(--card-bg);
+    border: 1.5px solid rgba(45,35,24,0.25);
+    border-radius: 2px;
+    padding: 20px 18px 18px;
+    box-shadow: 4px 4px 0 var(--card-shadow), 0 1px 3px rgba(0,0,0,0.08);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: inline-block;
+    width: 100%;
+  }
+
+  /* Varied slight rotations */
+  .card:nth-child(3n) { transform: rotate(0.4deg); }
+  .card:nth-child(3n+1) { transform: rotate(-0.3deg); }
+  .card:nth-child(3n+2) { transform: rotate(0.6deg); }
+
+  .card:hover {
+    transform: rotate(0deg) translateY(-3px) scale(1.01) !important;
+    box-shadow: 7px 7px 0 var(--card-shadow), 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 10;
+  }
+
+
+
+  .when-badge {
+    display: inline-block;
+    font-family: 'Caveat', cursive;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 3px 11px 4px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transform: rotate(-1.5deg);
+    transform-origin: left center;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.06);
+    position: relative;
+    top: -1px;
+  }
+
+  .card:nth-child(even) .when-badge  { transform: rotate(1.2deg); }
+  .card:nth-child(3n)   .when-badge  { transform: rotate(-0.6deg); }
+
+  .when-Early .when-badge { background: var(--early); color: var(--early-ink); }
+  .when-Later .when-badge { background: var(--later); color: var(--later-ink); }
+  .when-Resistance .when-badge { background: var(--resistance); color: var(--resistance-ink); }
+  .when-Throughout .when-badge { background: var(--throughout); color: var(--throughout-ink); }
+
+  .card-name {
+    font-family: 'Caveat', cursive;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .card-summary {
+    font-size: 0.88rem;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  /* Handdrawn underline on name */
+  .card-name::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: currentColor;
+    margin-top: 2px;
+    opacity: 0.2;
+    border-radius: 1px;
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    color: var(--ink-light);
+    grid-column: 1/-1;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 35, 24, 0.4);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: #fdfcfa;
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 8px 8px 0 #b0a080, 0 20px 60px rgba(0,0,0,0.3);
+    padding: 32px 30px 28px;
+    transform: rotate(-0.5deg);
+    /* Lined paper effect */
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      #e8ddc8 27px,
+      #e8ddc8 28px
+    );
+    background-attachment: local;
+  }
+
+  /* Red margin line */
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 48px;
+    bottom: 0;
+    width: 2px;
+    background: rgba(200, 80, 80, 0.25);
+    pointer-events: none;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--ink-light);
+    line-height: 1;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .modal-close:hover { color: var(--ink); }
+
+  .modal-when {
+    display: inline-block;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .modal-name {
+    font-family: 'Caveat', cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  .modal-section-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 18px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .modal-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-light);
+    opacity: 0.3;
+  }
+
+  .modal-text {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  /* Tape on modal */
+  .modal::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%) rotate(1deg);
+    width: 70px;
+    height: 24px;
+    background: var(--tape);
+    border: 1px solid rgba(200,180,100,0.4);
+    border-radius: 1px;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Patterns for Introducing Ideas</h1>
+  <p class="subtitle">48 strategies for championing change in your organisation</p>
+  <p class="attribution">Based on the patterns in <a href="https://amzn.eu/d/0gghC8NL" target="_blank" rel="noopener"><em>Fearless Change: Patterns for Introducing New Ideas</em></a> by Linda Rising and Mary Lynn Manns</p>
+</div>
+
+<div class="controls">
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" placeholder="Search patterns…" />
+  </div>
+  <div class="filter-tabs">
+    <button class="tab active" data-when="All">All</button>
+    <button class="tab" data-when="Early">Early</button>
+    <button class="tab" data-when="Later">Later</button>
+    <button class="tab" data-when="Resistance">Resistance</button>
+    <button class="tab" data-when="Throughout">Throughout</button>
+  </div>
+</div>
+
+<span class="count" id="count"></span>
+
+<div class="cards-grid" id="cardsGrid"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-when" id="modalWhen"></div>
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-section-label">Context</div>
+    <p class="modal-text" id="modalContext"></p>
+    <div class="modal-section-label">Problem</div>
+    <p class="modal-text" id="modalProblem"></p>
+    <div class="modal-section-label">Solution</div>
+    <p class="modal-text" id="modalSolution"></p>
+  </div>
+</div>
+
+<script>
+const patterns = [{"name":"Ask for Help","when":"Early","summary":"Since the task of introducing a new idea into an organization is a big job, look for people and resources to help your efforts.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into your organization.","problem":"The job of introducing a new idea into an organization is too big for one person, especially a newcomer who doesn\u2019t know the ropes.","solution":"Ask as many people as you can for help when you need it. Don\u2019t try to do it alone."},{"name":"Big Jolt","when":"Later","summary":"To provide more visibility for the change effort, invite a high profile person into your organization to talk about the new idea.","context":"You are a Dedicated Champion working to introduce a new idea into your organization.","problem":"You\u2019ve been carrying out some activities to give your new idea some visibility in your organization, but at some point you need to attract more attention to the effort.","solution":"Arrange for a high-profile person who can talk about the new idea to do a presentation in your organization."},{"name":"Bridge-Builder","when":"Resistance","summary":"Pair those who have accepted the new idea with those who have not.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into your organization. Some people in the organization have accepted the new idea, while others have not.","problem":"Some won\u2019t listen to even the most enthusiastic proponent if it\u2019s someone they don\u2019t know or trust.","solution":"Ask for help from Early Adopters, Connectors, or gurus who have already adopted the innovation. Introduce them to people who have interests similar to theirs and encourage them to discuss how they found the innovation useful."},{"name":"Brown Bag","when":"Early","summary":"Use the time when people normally eat lunch to provide a convenient and relaxed setting for hearing about the new idea.","context":"You are an Evangelist or Dedicated Champion who would like to call a meeting to introduce a new idea. Members of the user community are free to attend or not.","problem":"People can be too busy to attend optional meetings held during work hours.","solution":"Hold the meeting in the middle of the day and invite attendees to bring their own lunches."},{"name":"Champion Skeptic","when":"Resistance","summary":"Ask for help from strong opinion leaders, who are skeptical of your new idea, to play the role of \u201cofficial skeptic.\u201d Use their comments to improve your effort, even if you don\u2019t change their minds.","context":"You are an Evangelist or Dedicated Champion trying to Involve Everyone. You are using Fear Less and Bridge-Builder to try to interest skeptics in your new idea.","problem":"Some of the resistors to the new idea are strong opinion leaders in your organization.","solution":"Ask for help from a skeptical opinion leader to play the role of \u201cofficial skeptic\u201d or \u201cofficial realist.\u201d"},{"name":"Connector","when":"Early","summary":"To help you spread the word about the innovation, ask for help from people who have connections with many others in the organization.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization. You\u2019re doing some things to give exposure to a new idea, but you know there are others who might be interested.","problem":"Your organization is too big for you to personally contact everyone.","solution":"Ask for help in spreading the word about the innovation from those who know and communicate with many others in your organization."},{"name":"Corporate Angel","when":"Later","summary":"To help align the innovation with the goals of the organization, get support from a high-level executive.","context":"You are an Evangelist or a Dedicated Champion trying to introduce a new idea into your organization. You\u2019ve been giving Brown Bags and have won the approval of your Local Sponsor.","problem":"Support from local management will provide some attention and resources for the new idea, but you need high-level support to have a more lasting impact.","solution":"Enlist the support of a high-level executive who has a special interest in the new idea and will provide direction and the resources to support it."},{"name":"Corridor Politics","when":"Resistance","summary":"Informally work on decision makers and key influencers before an important vote to make sure they fully understand the consequences of the decision.","context":"You are an Evangelist or Dedicated Champion facing an upcoming decision that will have an impact on your effort. The decision makers are peers, or at least approachable.","problem":"It\u2019s difficult to address the concerns of all decision makers when a new idea is raised in a large meeting.","solution":"Informally work on decision makers and key influencers one-on-one before the vote. Try to get the approval of anyone who can kill it."},{"name":"Dedicated Champion","when":"Later","summary":"To increase your effectiveness in introducing your new idea, make a case for having the work part of your job description.","context":"You are an Evangelist who has successfully enlisted a Local Sponsor or Corporate Angel.","problem":"Effectively introducing a new idea into any organization is too much work for a volunteer.","solution":"Make a case for including the change initiative as part of your job description."},{"name":"Do Food","when":"Early","summary":"Make an ordinary gathering a special event by including food.","context":"You are an Evangelist or Dedicated Champion who has called a meeting to introduce a new idea. Members of the user community are free to attend or not. You have resources, your own personal contribution or those of a Local Sponsor or Corporate Angel.","problem":"Usually a meeting is just another ordinary, impersonal event.","solution":"Make food available at the meeting."},{"name":"e-Forum","when":"Early","summary":"Set up an electronic bulletin board, distribution list, listserve, or writeable Web site for those who want to hear more.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization.","problem":"You need to initiate and maintain regular contact with people who might be interested in your new idea.","solution":"Create a publicly accessible electronic, interactive forum. Advertise its existence. Keep it alive, active, and growing."},{"name":"Early Adopter","when":"Early","summary":"Win the support of the people who can be opinion leaders for the new idea.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization. You have a small group of Innovators who support your new idea.","problem":"To create more impact for the new idea in an organization, interest must extend beyond the initial group of supporters.","solution":"Look for the opinion leaders and ask them for help."},{"name":"Early Majority","when":"Later","summary":"To create commitment to the new idea in the organization, you must convince the majority.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization. You have the support of Innovators and Early Adopters.","problem":"The support of Innovators and Early Adopters will spark the new idea, but you need much more to truly have impact.","solution":"Expand the group that has adopted the new idea rapidly to include the more deliberate majority that will allow the new idea to establish a strong foothold."},{"name":"Evangelist","when":"Throughout","summary":"To begin to introduce the new idea into your organization, do everything you can to share your passion for it.","context":"You\u2019re excited about a new idea. Maybe you went to a conference or read an article or book and, as a result, started learning more. You believe your idea will have value for your organization and you want to spread the word.","problem":"You want to get a new idea going, but you don\u2019t know where to start","solution":"To introduce a new idea, let your passion for this new idea drive you."},{"name":"External Validation","when":"Early","summary":"To increase the credibility of the new idea, bring in information from sources external to the organization.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into your organization. People are writing and publishing on topics related to the new idea.","problem":"Before being persuaded to accept a new idea, people want assurance that the idea has validity outside the organization.","solution":"Give people in the organization external sources of useful information about the new idea."},{"name":"Fear Less","when":"Resistance","summary":"Turn resistance to the new idea to your advantage.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization.","problem":"Any innovation is disruptive, so resistance is likely.","solution":"Ask for help from resistors."},{"name":"Group Identity","when":"Early","summary":"Give the change effort an identity to help people recognize that it exists.","context":"You are an Evangelist or Dedicated Champion. You\u2019ve had a Brown Bag or perhaps just an informal meeting in the cafeteria or hallway.","problem":"It\u2019s harder to introduce a new idea when people aren\u2019t aware that the effort exists.","solution":"Give the change effort an identity."},{"name":"Guru on Your Side","when":"Early","summary":"Enlist the support of senior-level people who are esteemed by members of the organization.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization.","problem":"People in an organization can be reluctant to show interest in a new idea unless it has the support of colleagues they respect.","solution":"Enlist the support of experienced, senior-level gurus who are respected by both managers and non-managers alike."},{"name":"Guru Review","when":"Later","summary":"Gather anyone who is a Guru on Your Side and other interested colleagues to evaluate the new idea for managers and other developers.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into your organization.","problem":"Some managers and developers are supportive, but others are reluctant to join in until they have some assurance that this is a worthwhile idea.","solution":"Gather a review team of respected gurus in the organization to evaluate the new idea."},{"name":"Hometown Story","when":"Later","summary":"To help people see the usefulness of the new idea, encourage those who have had success with it to share their stories.","context":"You are a Dedicated Champion trying to introduce a new idea into your organization.","problem":"People who haven\u2019t used the new idea may not be aware that other people have used it successfully.","solution":"Encourage individuals to share their experiences with the new idea in an informal, highly interactive session."},{"name":"In Your Space","when":"Early","summary":"Keep the new idea visible by placing reminders throughout the organization.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into your organization.","problem":"Unless people are reminded, they may forget about the new idea.","solution":"Post information about the new idea around your organization\u2014wherever people are likely to see it and discuss it."},{"name":"Innovator","when":"Early","summary":"When you begin the change initiative, ask for help from colleagues who like new ideas.","context":"You are a new Evangelist or Dedicated Champion just starting to introduce a new idea into your organization.","problem":"You need people to jumpstart the new idea in your organization.","solution":"Find the people who are quick to adopt new ideas. Talk to them about the innovation and ask for help in sparking an interest for it in the organization."},{"name":"Involve Everyone","when":"Later","summary":"For a new idea to be successful across an organization, everyone should have an opportunity to support the innovation and make his own unique contribution.","context":"You are a Dedicated Champion working to introduce patterns into your organization. There are others in the community who might get involved with a little encouragement.","problem":"Even when you ask for help, there\u2019s a tendency to take on too much. Others, especially those who don\u2019t see the value in the new idea, may think of it as \u201cyour show.\u201d","solution":"Make it known that everyone is welcome to be part of the change effort. Involve people from as many different groups as possible: management, administrative and technical support, marketing, and training."},{"name":"Just Do It","when":"Early","summary":"To prepare to spread the word about the new idea, use it in your own work to discover its benefits and limitations.","context":"You are an Evangelist-wanna-be, motivated to adopt a new idea. You are interested in spreading the word to others in the organization, but you don\u2019t have enough understanding of what the new idea can offer. When you talk about the possibilities, people ask questions that you can\u2019t answer.","problem":"You don\u2019t have any experience with the innovation yourself, just good ideas that might work. You believe that the innovation can help the organization, but you\u2019re not sure.","solution":"Gather first-hand information on the benefits and limitations of the innovation by integrating it into your current work."},{"name":"Just Enough","when":"Later","summary":"To ease learners into the more difficult concepts of a new idea, give a brief introduction and then make more information available when they are ready.","context":"You are an Evangelist or Dedicated Champion working to spread the word about a new idea in your organization.","problem":"Difficult, complex concepts can overwhelm novices.","solution":"When introducing the new idea, concentrate on the fundamentals and give learners a brief description of the more difficult concepts. Provide more information when they are ready."},{"name":"Just Say Thanks","when":"Early","summary":"To show your appreciation, say \u201cThanks\u201d in the most sincere way you can to everyone who helps you.","context":"You are an Evangelist or a Dedicated Champion. Others are helping you introduce your new idea into the organization.","problem":"People feel unappreciated when they work hard and no one notices or cares.","solution":"Find everyone who has helped you and say thanks in the most sincere way you can."},{"name":"Local Sponsor","when":"Later","summary":"Ask for help from first-line management. When your boss supports the tasks you are doing to introduce the new idea, you can be even more effective.","context":"You are an Evangelist trying to introduce a new idea into your organization.","problem":"You need attention and resources for the new idea.","solution":"Find a first-line manager to support your new idea, ideally, your boss."},{"name":"Location, Location, Location","when":"Later","summary":"To avoid interruptions that disrupt the flow of an event, try to hold significant events off site.","context":"You are planning a half- or whole-day seminar or other event.","problem":"When you hold an event onsite at the organization, attendees can be easily distracted with their nearby work obligations.","solution":"Hold significant events of a half-day or longer offsite but nearby."},{"name":"Mentor","when":"Later","summary":"When a project wants to get started with the new idea, have someone around who understands it and can help the team.","context":"You are a Dedicated Champion trying to introduce a new idea into your organization. A project is interested in the innovation but some/all of the team members are unfamiliar with it.","problem":"People want to use the new idea on their project but don\u2019t know how to begin","solution":"Find an outside or internal consultant or trainer to provide mentoring and feedback while project members are getting started with the innovation."},{"name":"Next Steps","when":"Early","summary":"Take time near the end of an event about the new idea to identify what participants can do next.","context":"You are giving a presentation or having a meeting to explain a new idea.","problem":"A presentation in a training class or another event can leave attendees uncertain about what to do with what they have learned.","solution":"Take time near the end of a presentation to brainstorm and discuss how the participants can apply the new information."},{"name":"Personal Touch","when":"Early","summary":"To convince people of the value in a new idea, show how it can be personally useful and valuable to them.","context":"You are an Evangelist or Dedicated Champion who is introducing a new idea into an organization.","problem":"Presentations and training will arouse curiosity and some interest in the new idea, but you must do more\u2014the old habits of most individuals will not die without effort.","solution":"Talk with individuals about the ways in which the new idea can be personally useful and valuable to them."},{"name":"Piggyback","when":"Early","summary":"When faced with several obstacles in your strategy to introduce something new, look for a way to piggyback on a practice in your organization.","context":"You are an Evangelist or Dedicated Champion. There are some practices in place in your organization that relate to the new idea.","problem":"Several procedures or hurdles are required for the introduction of your new idea but you\u2019re looking for an easier way.","solution":"Piggyback the new idea on a well-accepted practice in the organization."},{"name":"Plant the Seeds","when":"Early","summary":"To spark interest, carry materials (seeds) and display (plant) them when the opportunity arises.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into your organization. You have some printed materials about the idea.","problem":"You want to spark some interest in the new idea.","solution":"Carry materials about the new idea to events where people gather. Put them in places where people are likely to pick them up and look at them."},{"name":"The Right Time","when":"Early","summary":"Consider the timing when you schedule events or when you ask others for help.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea into an organization.","problem":"When people face deadlines and have too much to do, they tend to focus on things that move them toward completing necessary tasks and making the deadlines.","solution":"Be aware of those times when people are likely to be the busiest. Schedule events and requests for help outside those times."},{"name":"Royal Audience","when":"Later","summary":"Arrange for management and members of the organization to spend time with a Big Jolt visitor.","context":"You are an Evangelist or Dedicated Champion. A Big Jolt visitor has a few spare hours during the day or during the evening before and/or after the day of the visit.","problem":"You want to get the most out of a visit from a famous person.","solution":"Use spare hours or lunchtime during the day or evenings, before and/or after the featured presentation, to make the visitor available for teams, individuals, or managers."},{"name":"Shoulder to Cry On","when":"Later","summary":"To avoid becoming too discouraged when the going gets tough, find opportunities to talk with others who are also struggling to introduce a new idea.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into your organization.","problem":"When you\u2019re struggling to introduce a new idea, it\u2019s easy to become discouraged.","solution":"Get together regularly with others who are also working to introduce the new idea or are interested in the process."},{"name":"Small Successes","when":"Throughout","summary":"To avoid becoming overwhelmed by the challenges and all the things you have to do when you\u2019re involved in an organizational change effort, celebrate even small successes.","context":"You are an Evangelist. You\u2019ve applied some patterns from this language, and some worked but others didn\u2019t.","problem":"Every organizational change effort has its ups and downs. It\u2019s a difficult process.","solution":"As you carry on Step by Step, take the time to recognize and celebrate successes, especially the small ones."},{"name":"Smell of Success","when":"Later","summary":"When your efforts result in some visible positive result, people will come out of the woodwork to talk to you. Treat this opportunity as a teaching moment.","context":"You are an Evangelist or Dedicated Champion trying to introduce a new idea. You\u2019ve had at least limited success.","problem":"When you start to have some success, newcomers will ask you about the innovation.","solution":"When people comment on the success they see with the innovation, treat their inquiry as a teaching moment."},{"name":"Stay in Touch","when":"Early","summary":"Once you\u2019ve enlisted the support of key persons, don\u2019t forget about them and make sure they don\u2019t forget about you.","context":"You are an Evangelist or Dedicated Champion working to introduce a new idea into an organization. You\u2019ve captured the interest of a handful of key persons.","problem":"Your key supporters have too many things to think about and can forget about the new idea.","solution":"Stay in touch with your key supporters."},{"name":"Step by Step","when":"Throughout","summary":"Relieve your frustration at the enormous task of changing an organization by taking one small step at a time toward your goal.","context":"You are an Evangelist. After applying Test the Waters and Time for Reflection, you realize that there is interest in the new idea in your organization.","problem":"You wonder what your plan should be for introducing the new idea into your organization.","solution":"Use an incremental approach in the change initiative, with short-term goals, while keeping your long-term vision."},{"name":"Study Group","when":"Early","summary":"Form a small group of colleagues who are interested in exploring or continuing to learn about a specific topic.","context":"You and others in the organization would like to learn more about a new idea. There are some resources on the topic, such as books or other written materials.","problem":"There may be little or no money for formal training on the specific topic.","solution":"Form a group of no more than eight colleagues who are interested in exploring and studying an interesting topic."},{"name":"Sustained Momentum","when":"Later","summary":"Take a pro-active approach to the ongoing work of sustaining the interest in the new idea in your organization.","context":"You are a Dedicated Champion. You have made some progress introducing the new idea into your organization.","problem":"The many other things that need to be done will tempt you to put the task of introducing the new idea on the back burner for a while. But this can cause you and other people to lose interest in it.","solution":"Take a pro-active approach in the organization to the ongoing work of sustaining the interest in the new idea. Take some small action each day, no matter how insignificant it may seem, to move you closer to your goal."},{"name":"Tailor Made","when":"Early","summary":"To convince people in an organization of the value they can gain from the new idea, tailor your message to the needs of the organization.","context":"You are a Dedicated Champion using Personal Touch to show how your new idea can be personally useful.","problem":"Individuals can be intrigued by interesting ideas, but to have impact on an organization, the idea has to be more than just interesting.","solution":"Tailor your message about the innovation to the needs of the organization."},{"name":"Test the Waters","when":"Throughout","summary":"When a new opportunity presents itself, see if there is any interest by using some of the patterns in this language and then evaluating the result.","context":"You are excited about a new idea and you would like to be an Evangelist for it in your organization.","problem":"When you learn about something new, you wonder if the organization is ready for it.","solution":"Choose a pattern or two from this collection, use them, and then evaluate the result."},{"name":"Time for Reflection","when":"Throughout","summary":"To learn from the past, take time at regular intervals to evaluate what is working well and what should be done differently.","context":"You are an Evangelist or Dedicated Champion using Test the Waters to try to introduce a new idea into your organization.","problem":"We make the same assumptions and the same mistakes based on those assumptions over and over again.","solution":"Pause in any activity to reflect on what is working well and what should be done differently."},{"name":"Token","when":"Later","summary":"To keep a new idea alive in a person\u2019s memory, hand out tokens that can be identified with the topic being introduced.","context":"You are a Dedicated Champion trying to get people interested in a new idea. You have limited resources.","problem":"People may be enthusiastic about a topic when they first hear about it, but the enthusiasm quickly wanes as they forget tomorrow what excited them today.","solution":"Hand out small tokens that will remind people of the new idea."},{"name":"Trial Run","when":"Resistance","summary":"When the organization is not willing to commit to the new idea, suggest that they experiment with it for a short period and study the results.","context":"You are an Evangelist. You\u2019re getting worn out as you attempt to address the concerns people have about the new idea because it doesn\u2019t look like the questions and objections are going to end anytime soon.","problem":"There are people in the organization who are expressing an endless supply of objections to the new idea. It would be a daunting, or even impossible, task to try to ease everyone\u2019s worries before the new idea is adopted.","solution":"Suggest that the organization, or a segment of the organization, try the new idea for a limited period as an experiment."},{"name":"Whisper in the General\u2019s Ear","when":"Resistance","summary":"Managers are sometimes hard to convince in a group setting, so meet privately to address any concerns.","context":"You are a Dedicated Champion working to get management support for your new idea. There are troublesome managers who have not been convinced by any presentations you have made.","problem":"Managers who are against your new idea have the power to block your progress.","solution":"Set up a short one-on-one meeting with a manager to address any concerns with the innovation and the effort to introduce it."}];
+
+let currentFilter = 'All';
+let currentSearch = '';
+
+const grid = document.getElementById('cardsGrid');
+const countEl = document.getElementById('count');
+const overlay = document.getElementById('modalOverlay');
+
+function render() {
+  const q = currentSearch.toLowerCase();
+  const filtered = patterns.filter(p => {
+    const matchWhen = currentFilter === 'All' || p.when === currentFilter;
+    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q) || p.solution.toLowerCase().includes(q);
+    return matchWhen && matchSearch;
+  });
+
+  countEl.textContent = `Showing ${filtered.length} of ${patterns.length} patterns`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty">No patterns found — try a different search ✏️</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="card when-${p.when}" data-idx="${patterns.indexOf(p)}" tabindex="0">
+      <span class="when-badge">${p.when}</span>
+      <div class="card-name">${p.name}</div>
+      <div class="card-summary">${p.summary}</div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => openModal(parseInt(card.dataset.idx)));
+    card.addEventListener('keydown', e => e.key === 'Enter' && openModal(parseInt(card.dataset.idx)));
+  });
+}
+
+function openModal(idx) {
+  const p = patterns[idx];
+  const whenColors = {
+    Early: 'var(--early)', Later: 'var(--later)', Resistance: 'var(--resistance)', Throughout: 'var(--throughout)'
+  };
+  const whenInk = {
+    Early: 'var(--early-ink)', Later: 'var(--later-ink)', Resistance: 'var(--resistance-ink)', Throughout: 'var(--throughout-ink)'
+  };
+  document.getElementById('modalWhen').textContent = p.when;
+  document.getElementById('modalWhen').style.background = whenColors[p.when];
+  document.getElementById('modalWhen').style.color = whenInk[p.when];
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalContext').textContent = p.context;
+  document.getElementById('modalProblem').textContent = p.problem;
+  document.getElementById('modalSolution').textContent = p.solution;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentFilter = tab.dataset.when;
+    render();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
